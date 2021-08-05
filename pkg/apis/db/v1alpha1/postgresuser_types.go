@@ -17,6 +17,10 @@ type PostgresUserSpec struct {
 	Privileges string `json:"privileges"`
 	// +optional
 	Annotations map[string]string `json:"annotations,omitempty"`
+	// +optional
+	TargetNamespace string `json:"targetNamespace"`
+	// +optional
+	TargetName string `json:"targetName"`
 }
 
 // PostgresUserStatus defines the observed state of PostgresUser

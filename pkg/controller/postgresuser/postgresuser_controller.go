@@ -268,21 +268,34 @@ func (r *ReconcilePostgresUser) newSecretForCR(cr *dbv1alpha1.PostgresUser, role
 		"app": cr.Name,
 	}
 	annotations := cr.Spec.Annotations
+	targetNamespace := cr.Spec.TargetNamespace
+	targetName := cr.Spec.TargetName
+
+	if targetNamespace == "" {
+		targetNamespace = cr.Namespace
+	 }
+
+	 if targetName == "" {
+		targetName = fmt.Sprintf("%s-%s", cr.Spec.SecretName, cr.Name)
+	 }
 
 	return &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        fmt.Sprintf("%s-%s", cr.Spec.SecretName, cr.Name),
-			Namespace:   cr.Namespace,
+			Name:        targetName,
+			Namespace:   targetNamespace,
 			Labels:      labels,
 			Annotations: annotations,
 		},
 		Data: map[string][]byte{
-			"POSTGRES_URL":  []byte(pgUserUrl),
-			"HOST":          []byte(r.pgHost),
-			"DATABASE_NAME": []byte(cr.Status.DatabaseName),
-			"ROLE":          []byte(role),
-			"PASSWORD":      []byte(password),
-			"LOGIN":         []byte(login),
+			"POSTGRES_URL":               []byte(pgUserUrl),
+			"POSTGRES_EXTERNAL_ADDRESS":  []byte(r.pgHost),
+			"POSTGRES_EXTERNAL_PORT":     []byte("5432"),
+			"POSTGRES_HOST":              []byte(r.pgHost),
+			"POSTGRES_DATABASE":          []byte(cr.Status.DatabaseName),
+			"ROLE":                       []byte(role),
+			"POSTGRES_PASSWORD":          []byte(password),
+			"POSTGRES_USERNAME":          []byte(login),
+			"POSTGRES_SUPERUSER":         []byte("false"),
 		},
 	}
 }
