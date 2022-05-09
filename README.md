@@ -23,6 +23,17 @@ In order for this operator to work correctly with Azure managed PostgreSQL datab
 * `POSTGRES_CLOUD_PROVIDER` set to `Azure`
 * `POSTGRES_DEFAULT_DATABASE` set to your default database, i.e. `postgres`
 
+### GCP
+
+In order for this operator to work correctly with GCP, you need to set `POSTGRES_CLOUD_PROVIDER` to `GCP` 
+
+To have operator work with GCP properly you have to:
+* use postgresql connection in secret
+* manually create a Master role e.g. "devops-operators"
+* use such role in database CR e.g. spec.masterRole: devops-operator
+
+DropRole method will check for db owner and will skip master role dropping
+
 ## Installation
 
 This operator requires a Kubernetes Secret to be created in the same namespace as operator itself.
@@ -142,8 +153,9 @@ can be found [here](https://github.com/kubernetes/client-go/blob/master/README.m
 
 Postgres operator compatibility with Operator SDK version is in the table below
 
-|                               | Operator SDK 0.17.x | Operator SDK 1.9.0 |
-|-------------------------------|---------------------|--------------------|
-| `postgres-operator 0.4.x`     | ✓                   | -                  |
-| `postgres-operator 1.0.x`     | -                   | ✓                  |
-| `HEAD`                        | ✓                   | -                  |
+|                               | Operator SDK version | apiextensions.k8s.io |
+|-------------------------------|----------------------|----------------------|
+| `postgres-operator 0.4.x`     | v0.17                |  v1beta1             |
+| `postgres-operator 1.0.x`     | v0.18                |  v1                  |
+| `HEAD`                        | v0.18                |  v1                  |
+
