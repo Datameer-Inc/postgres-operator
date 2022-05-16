@@ -4,8 +4,6 @@ kind: Kustomization
 namespace: operators
 
 resources:
-- crds/db.movetokube.com_postgres_crd.yaml
-- crds/db.movetokube.com_postgresusers_crd.yaml
 - operator.yaml
 - role.yaml
 - role_binding.yaml
